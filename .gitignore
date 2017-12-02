@@ -4,3 +4,6 @@
 .project
 bin/
 .DS_Store
+src-gen
+build
+results
