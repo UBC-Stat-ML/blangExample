@@ -9,7 +9,7 @@ plugins {
 dependencies {
   xtextLanguages "ca.ubc.stat.blang:ca.ubc.stat.blang:3.23.2"
   compile group: 'ca.ubc.stat', name: 'conifer', version: '2.0.3'
-  compile group: 'ca.ubc.stat', name: 'blangSDK', version: '1.2.4'
+  compile group: 'ca.ubc.stat', name: 'blangSDK', version: '1.3.0'
 }
 
 xtext {

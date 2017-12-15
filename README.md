@@ -10,7 +10,7 @@ Usage
 
 Requires Java 8 and git.
 
-Check out the source ``git clone git@github.com:UBC-Stat-ML/blangExample.git``
+Check out the source ``git clone https://github.com/UBC-Stat-ML/blangExample.git``
 
 ### Blang desktop IDE (eclipse)
 
