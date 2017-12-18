@@ -3,7 +3,7 @@ import conifer.*
 import static conifer.Utils.*
 
 model Example {
-  random RealVar shape ?: realVar, rate ?: realVar
+  random RealVar shape ?: latentReal, rate ?: latentReal
   random SequenceAlignment observations
   random UnrootedTree tree ?: unrootedTree(observations.observedTreeNodes)
   param EvolutionaryModel evoModel ?: kimura(observations.nSites)
@@ -11,7 +11,7 @@ model Example {
   laws {
     shape ~ Exponential(1.0)
     rate ~ Exponential(1.0)
-    tree | shape, rate ~ NonClockTreePrior(Gamma.distribution(shape, rate))
+    tree | shape, rate ~ NonClockTreePrior(Gamma::distribution(shape, rate))
     observations | tree, evoModel ~ UnrootedTreeLikelihood(tree, evoModel) 
   }
 }
