@@ -29,8 +29,9 @@ Check out the source ``git clone https://github.com/UBC-Stat-ML/blangExample.git
 
 ```
 ./build/install/example/bin/example \
-        --model.observations.file data.fasta \
-        --model.observations.encoding DNA \
-        --engine SCM \
-        --engine.nThreads MAX
+    --model.observations.file data/primates.fasta \
+    --model.observations.encoding DNA \
+    --engine SCM \
+    --engine.nThreads MAX \
+    --excludeFromOutput observations
 ```
