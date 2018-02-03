@@ -1,7 +1,7 @@
 Summary
 -------
 
-<!-- [![Build Status](https://travis-ci.org/alexandrebouchard/blangExample.png?branch=master)](https://travis-ci.org/alexandrebouchard/blangExample) -->
+[![Build Status](https://travis-ci.org/UBC-Stat-ML/blangExample.png?branch=master)](https://travis-ci.org/UBC-Stat-ML/blangExample)
 
 A simple blang project template. 
 
