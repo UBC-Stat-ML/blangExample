@@ -4,9 +4,9 @@ model Mixture {
   param Integer K ?: 2
   random List<RealVar> data
   random Simplex pi ?: latentSimplex(K)
-  random List<IntVar> indicators ?: latentListOfInt(data.size)
-  random List<RealVar> means ?: latentListOfReal(K)
-  random List<RealVar> sds ?: latentListOfReal(K)
+  random List<IntVar> indicators ?: latentIntList(data.size)
+  random List<RealVar> means ?: latentRealList(K)
+  random List<RealVar> sds ?: latentRealList(K)
   
   laws {
     pi | K ~ SimplexUniform(K)
