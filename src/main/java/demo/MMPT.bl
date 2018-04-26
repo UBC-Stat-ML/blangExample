@@ -1,0 +1,19 @@
+package demo
+
+model MMPT {
+  random RealVar x 
+  random RealVar dummy 
+  
+  laws {
+  	logf(x,dummy)  {
+      Math.log(Math.exp(-0.5 * pow(2-x, 2)) + Math.exp(-0.5 * pow(-2-x, 2)))
+    }
+  }
+  
+  generate(rand){
+//  	if (rand.bernoulli(0.5))
+//  		return rand.normal(-2.0, 1.0)
+//  	else
+//  		return rand.normal(2.0, 1.0)
+  }
+}
