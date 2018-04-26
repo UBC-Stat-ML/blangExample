@@ -7,3 +7,16 @@ bin/
 src-gen
 build
 results
+.RData
+.Rhistory
+changePoint.pdf
+marginal.pdf
+means.pdf
+plot-change-point.R
+plot-mix.R
+plot-tank-pop.R
+plot-time-series.R
+run-simple-pedigree.R
+tanks.pdf
+trace-means.pdf
+data/texting-data.csv
