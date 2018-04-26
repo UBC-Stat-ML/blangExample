@@ -1,0 +1,25 @@
+
+package demo
+import briefj.collections.UnorderedPair
+
+model IsingPT {
+	param Integer N
+	random List<IntVar> vertices ?: latentIntList(N*N)
+	
+	laws {
+		for (UnorderedPair<Integer, Integer> pair : null){
+			logf(IntVar first  = vertices.get(pair.getFirst), 
+				 IntVar second = vertices.get(pair.getSecond)
+			){
+				if ((first != 0 && first != 1) || 
+					(second != 0 && second != 1))
+					return NEGATIVE_INFINITY
+				else
+					(2*first-1)*(2*second-1)
+			}
+		}
+		
+	}
+	generate(rand){
+	}
+}
