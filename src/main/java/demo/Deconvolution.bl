@@ -1,0 +1,36 @@
+package demo
+
+model Deconvolution {
+  
+  param Plate<String> loci
+  param Plate<Integer> referenceIds
+  
+  param Plated<Integer> referenceSNPs
+  
+  random RealVar mixtureProportion ?: latentReal
+  random IntVar 
+    strain1 ?: latentInt,
+    strain2 ?: latentInt
+  
+  param Plated<Integer> depths
+  random Plated<IntVar> variantCounts
+  
+  random RealVar overdispersion ?: latentReal
+  
+  laws {
+    
+    mixtureProportion ~ ContinuousUniform(0.0, 1.0)
+    strain1 | Integer n = referenceIds.indices.size ~ DiscreteUniform(0, n)
+    strain2 | Integer n = referenceIds.indices.size, strain1 ~ DiscreteUniform(strain1, n)
+    
+    for (Index<String> locus : loci.indices) {
+      
+      variantCounts.get(locus) | mixtureProportion, overdispersion, strain1, strain2, Integer depth = depths.get(locus), List<Integer> referenceSNPsAtLocus = referenceSNPs.asList(referenceIds)
+        ~ Binomial(
+          depth,
+          mixtureProportion * referenceSNPsAtLocus.get(strain1) + (1.0 - mixtureProportion) * referenceSNPsAtLocus.get(strain2)
+        )
+      
+    }
+  }
+}

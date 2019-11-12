@@ -18,7 +18,8 @@ model Mixture {
     
     for (int n : 0 ..< data.size) {
       indicators.get(n) | pi ~ Categorical(pi)
-      data.get(n) | IntVar indic = indicators.get(n), means, sds ~ Normal(means.get(indic), pow(sds.get(indic), 2.0))
+      data.get(n) | means, sds, IntVar indic = indicators.get(n)  
+        ~ Normal(means.get(indic), pow(sds.get(indic), 2.0))
     }
   }
 }

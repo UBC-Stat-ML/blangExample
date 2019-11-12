@@ -1,0 +1,25 @@
+package demo
+
+model HierarchicalBinomial {
+  
+  param Boolean useHierarchical ?: true
+  
+  param GlobalDataSource data
+  param Plate<String> rocketTypes
+  param Plated<IntVar> numberOfLaunches
+  random Plated<RealVar> failureProbabilities
+  random Plated<IntVar> numberOfFailures
+  random RealVar m ?: latentReal, s ?: latentReal
+  
+  laws {
+    m ~ ContinuousUniform(0, 1)
+    s ~ Exponential(0.1)
+    for (Index<String> rocketType : rocketTypes.indices.filter[key.startsWith("Ariane")]) {
+      failureProbabilities.get(rocketType) | m, s, useHierarchical ~ Beta(if (useHierarchical) m*s else 1.0, if (useHierarchical) (1.0-m)*s else 1.0)
+      numberOfFailures.get(rocketType)
+        | RealVar failureProbability = failureProbabilities.get(rocketType),
+          IntVar numberOfLaunch = numberOfLaunches.get(rocketType)
+        ~ Binomial(numberOfLaunch, failureProbability)
+    }
+  }
+}

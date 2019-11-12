@@ -1,0 +1,51 @@
+package demo
+
+import assign.SpikedRealVar
+import static extension demo.DeconvolutionUtils.*
+
+model Deconvolution2 {
+  
+  param Plate<String> loci
+  param Plate<Integer> referenceIds
+  param Plated<Integer> referenceSNPs
+  
+  random IntVar numberOfPopulations
+  random Plated<SpikedRealVar> prevalences
+  
+  param Plated<Integer> depths
+  random Plated<IntVar> variantCounts
+  
+  random RealVar overdispersion ?: latentReal
+  
+  laws {
+    
+    for (Index<Integer> id : referenceIds.indices) {
+      
+      prevalences.get(id).selected ~ Bernoulli(0.5)
+      prevalences.get(id).continuousPart ~ Exponential(1.0)
+      
+    }
+    
+    for (Index<String> locus : loci.indices) {
+      
+      variantCounts.get(locus) | overdispersion, Integer depth = depths.get(locus), List<Integer> referenceSNPsAtLocus = referenceSNPs.asList(referenceIds), List<SpikedRealVar> prevalencesList = prevalences.asList(referenceIds)
+        ~ NegativeBinomialMeanParam(
+          referenceSNPsAtLocus.dot(prevalencesList) / prevalencesList.sum, 
+          overdispersion
+        )
+      
+    }
+    
+    overdispersion ~ Exponential(1.0)
+    
+    numberOfPopulations ~ Poisson(1.0)
+    
+    | numberOfPopulations, 
+      Collection<IntVar> indicators = prevalences.asList(referenceIds).map[selected].toList 
+    ~  LogPotential(
+        if (indicators.map[intValue].sum > numberOfPopulations) NEGATIVE_INFINITY 
+        else 0.0
+      )
+    
+  }
+}

@@ -1,0 +1,59 @@
+package assign
+
+model SpikeSlabClassification {
+  
+  param Integer maxNumberFeatures ?: 3
+  
+  param GlobalDataSource data
+  param Plate<String> instances, features
+  
+  param Plated<Double> covariates
+  random Plated<SpikedRealVar> parameters
+  random Plated<IntVar> labels
+  
+  random RealVar selectedProbability ?: latentReal
+  random RealVar sigma ?: latentReal
+  random RealVar intercept ?: latentReal
+  
+  laws {
+    
+    // First: the likelihood: a standard logistic regression model
+    for (Index<String> instance : instances.indices) { // Loop over training instances (e.g. passengers)
+      labels.get(instance) | // we put a distribution on the label (e.g. Survived or not)
+        intercept,           // intercept is a parameter like in the Challenger example
+        // here, as a computation we extract the covariates specific to this passenger, 
+        // and convert it to a Map (https://docs.oracle.com/javase/8/docs/api/java/util/Map.html)
+        Map<String,Double> instanceCovariatesMap = covariates.slice(instance).asMap(features), 
+        Map<String,SpikedRealVar> parametersMap = parameters.asMap(features)
+        ~ Bernoulli({
+            // #1 compute the parameter of the Bernoulli
+            // TODO
+            var sum = 0.0
+            for (key : instanceCovariatesMap.keySet) 
+              sum += instanceCovariatesMap.get(key) * parametersMap.get(key).doubleValue
+            return sum
+        })
+    }
+    
+    // Here we place a spike and slab prior
+    for (Index<String> feature : features.indices) {
+      // that's the 'Spike'
+      parameters.get(feature).selected | selectedProbability ~ Bernoulli(selectedProbability) 
+      // #2 now build the 'Slab', i.e. 
+      // put a distribution on the variable "parameters.get(feature).continuousPart"
+      // TODO
+    }
+
+    // #3 Build priors on the remaining variables (intercept, selectedProbability, and any others introduced
+    // TODO
+
+
+    // This part enforces the constraint that no more than maxNumberFeatures should be active
+    | maxNumberFeatures, 
+      Collection<IntVar> indicators = parameters.asCollection(features).map[selected].toList 
+    ~  LogPotential(
+        if (indicators.map[intValue].sum > maxNumberFeatures) NEGATIVE_INFINITY 
+        else 0.0
+      )
+  }
+}

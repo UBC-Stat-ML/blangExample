@@ -1,0 +1,20 @@
+package demo
+
+model ArianeFlat {
+    
+  param GlobalDataSource data
+  param Plate<String> rocketTypes
+  param Plated<IntVar> numberOfLaunches
+  random Plated<RealVar> failureProbabilities
+  random Plated<IntVar> numberOfFailures
+  
+  laws {
+    for (Index<String> rocketType : rocketTypes.indices.filter[key.startsWith("Ariane")]) {
+      failureProbabilities.get(rocketType)  ~ Beta(1.0, 1.0)
+      numberOfFailures.get(rocketType)
+        | RealVar failureProbability = failureProbabilities.get(rocketType),
+          IntVar numberOfLaunch = numberOfLaunches.get(rocketType)
+        ~ Binomial(numberOfLaunch, failureProbability)
+    }
+  }
+}
